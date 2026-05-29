@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corporate Gradient Cover Letter Sheet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            color: #1a1a1a;
+            line-height: 1.65;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .a4-paper {
+            width: 100%;
+            max-width: 740px;
+            background: #ffffff;
+            position: relative;
+            min-height: 1040px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 🔵 Modern Soft Blue Gradient Top Banner matching third.png */
+        .top-banner {
+            background: linear-gradient(to right, #dae9fc 0%, #edf4fe 60%, #ffffff 100%);
+            padding: 60px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .banner-left {
+            max-width: 55%;
+        }
+        .banner-left h1 {
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #000000;
+            margin-bottom: 5px;
+        }
+        .designation-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #444444;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .banner-right {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #222222;
+            max-width: 40%;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 12px;
+        }
+        .contact-item:last-child {
+            margin-bottom: 0;
+        }
+        .contact-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border: 1.5px solid #000000;
+            border-radius: 50%;
+            margin-left: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* 📄 Document Content Area Setup */
+        .main-content {
+            padding: 45px 50px;
+            flex-grow: 1;
+        }
+        .date-container {
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            color: #444444;
+        }
+        .recipient-info {
+            font-weight: 500;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .salutation {
+            margin-bottom: 25px;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .letter-content {
+            font-size: 0.95rem;
+            color: #222222;
+            text-align: justify;
+            margin-bottom: 40px;
+        }
+        .letter-content br {
+            content: "";
+            margin: 12px 0;
+            display: block;
+        }
+        
+        /* ✍️ Live Interactive Signature Slot */
+        .closing-section {
+            margin-top: auto;
+            margin-bottom: 20px;
+        }
+        .signature-img {
+            max-height: 55px;
+            max-width: 200px;
+            margin: 8px 0;
+            display: block;
+        }
+        .sender-name-bottom {
+            font-weight: 700;
+            color: #000000;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+        .sender-title {
+            font-size: 0.9rem;
+            color: #666666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="a4-paper">
+        <div class="top-banner">
+            <div class="banner-left">
+                <h1 id="view-sender_name">Your Name</h1>
+                <div class="designation-title" id="view-job_title">Target Designation</div>
+            </div>
+            <div class="banner-right">
+                <div class="contact-item">
+                    <span id="view-sender_phone">+91 0000000000</span>
+                    <span class="contact-icon">📞</span>
+                </div>
+                <div class="contact-item">
+                    <span id="view-sender_email">yourname@example.com</span>
+                    <span class="contact-icon">✉️</span>
+                </div>
+                <div class="contact-item">
+                    <span id="view-sender_location">Your City, India</span>
+                    <span class="contact-icon">📍</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="date-container" id="view-current_date">May 29, 2026</div>
+            
+            <div class="recipient-info">
+                <div style="font-weight: 700;" id="view-recipient_name">Hiring Team Panel</div>
+                <div id="view-company_name">Company Name Inc.</div>
+            </div>
+            
+            <div class="salutation">
+                Dear <span id="view-salutation_name">Hiring Team</span>,
+            </div>
+            
+            <div class="letter-content" id="view-letter_body">
+                Your text content will sync here live...
+            </div>
+            
+            <div class="closing-section">
+                <p>Kind regards,</p>
+                
+                <img id="view-signature_image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Signature" class="signature-img" style="display: none;">
+                
+                <div class="sender-name-bottom" id="view-sender_name_fallback">Your Name</div>
+                <div class="sender-title">Applicant</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Automatic setup for current date formatting metrics
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('view-current_date').innerText = new Date().toLocaleDateString('en-US', options);
+
+        // Active layout observer to handle fallback nodes cleanly
+        const observer = new MutationObserver(() => {
+            const currentSenderName = document.getElementById('view-sender_name').innerText;
+            const currentRecipient = document.getElementById('view-recipient_name').innerText;
+            
+            document.getElementById('view-sender_name_fallback').innerText = currentSenderName || "Your Name";
+            document.getElementById('view-salutation_name').innerText = currentRecipient || "Hiring Team";
+        });
+        observer.observe(document.getElementById('view-sender_name'), { childList: true, characterData: true, subtree: true });
+        observer.observe(document.getElementById('view-recipient_name'), { childList: true, characterData: true, subtree: true });
+    </script>
+</body>
+</html>

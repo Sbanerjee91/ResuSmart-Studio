@@ -1,0 +1,183 @@
+{% extends 'nav.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .glass-panel {
+        background-color: rgba(255, 255, 255, 0.40);
+        backdrop-filter: blur(10px); border: none;
+    }
+    .skill-badge {
+        font-size: 1.1rem;
+        padding: 8px 16px;
+    }
+    
+    /* --- Live Preview & Scroll Adjustments --- */
+    .editor-container {
+        height: 85vh; overflow-y: auto;
+        -ms-overflow-style: none; scrollbar-width: none; 
+    }
+    .editor-container::-webkit-scrollbar { display: none; }
+    
+    .preview-container {
+        height: 85vh; overflow-y: auto;
+        background-color: #525659; display: flex; justify-content: center;
+        padding: 25px; border-radius: 10px; overflow: hidden;
+    }
+</style>
+
+<div class="container-fluid py-4 px-4">
+    
+    <div class="row mb-3 justify-content-center">
+        <div class="col-12 text-center text-white">
+            <h2 class="fw-bold">Step 4: Skills</h2>
+            <p>List your technical tools, languages, and core strengths.</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between position-relative text-white font-monospace small">
+                <div class="text-center text-success"><div class="bg-success text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">✓</div><br>Personal</div>
+                <div class="text-center text-success"><div class="bg-success text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">✓</div><br>Experience</div>
+                <div class="text-center text-success"><div class="bg-success text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">✓</div><br>Education</div>
+                <div class="text-center fw-bold text-primary"><div class="bg-primary text-light rounded-circle d-inline-block text-center mb-1 fw-bold" style="width:24px; height:24px; line-height:24px;">4</div><br>Skills</div>
+                <div class="text-center text-warning"><div class="bg-warning text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">5</div><br>Extra Details</div>
+                
+                <div class="progress position-absolute top-25 start-0 translate-middle-y w-100" style="height: 2px; z-index: -1; margin-top: 12px;">
+                    <div class="progress-bar bg-info" style="width: 72%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-5 editor-container p-4 rounded-4 shadow-lg glass-panel mb-4 mb-lg-0">
+            
+            <form method="post" class="mb-5 border-bottom border-secondary pb-4">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger rounded-4 shadow-sm">
+                        <p class="fw-bold mb-1">⚠️ Hold on! We found an issue:</p>
+                        {{ form.errors }}
+                    </div>
+                {% endif %}
+
+                <h4 class="fw-bold mb-3 text-dark">Add a Skill</h4>
+                
+                <div class="row align-items-end">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Skill Name</label>
+                        {{ form.skill_name }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold text-dark">Proficiency</label>
+                        {{ form.proficiency }}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-outline-dark rounded-pill px-4 fw-bold shadow">✚ Save Skill</button>
+            </form>
+
+            <h4 class="fw-bold mb-3 text-dark">Saved Skills</h4>
+            
+            {% if skills %}
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    {% for skill in skills %}                        
+                        <div class="bg-white rounded-pill shadow-sm border border-secondary d-flex align-items-center skill-badge">
+                            <span class="fw-bold text-primary me-2">{{ skill.skill_name }}</span>
+                            <span class="badge text-dark me-3">{{ skill.get_proficiency_display }}</span>
+                            
+                            <a href="{% url 'delete_skill' template.id skill.id %}" 
+                               class="text-danger text-decoration-none fw-bold" 
+                               title="Delete this skill"
+                               onclick="return confirm('Remove {{ skill.skill_name }}?');">
+                                ❌
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-dark fst-italic">No skills added yet.</p>
+            {% endif %} 
+            
+            <div class="d-flex flex-column-reverse flex-md-row justify-content-between gap-3 mt-4">
+                {% if skills %}
+                    <a href="{% url 'add_education' template.id %}" class="btn btn-dark rounded-pill px-5 fw-bold shadow me-auto">« Previous Page</a>
+                    <a href="{% url 'add_details' template.id %}" class="btn btn-primary rounded-pill px-4 px-md-5 py-2 fw-bold shadow text-center">Continue to Details »</a>
+                {% else %}
+                    <a href="{% url 'add_education' template.id %}" class="btn btn-dark rounded-pill px-5 fw-bold shadow me-auto">« Previous Page</a>
+                    <a href="{% url 'add_details' template.id %}" class="btn btn-outline-info rounded-pill px-5 fw-bold shadow bg-white">Skip Skills »</a>
+                {% endif %}
+            </div>
+            
+        </div> 
+
+        <div class="col-lg-7 preview-container shadow-lg">
+            <div style="width: 100%; height: 100%; overflow-y: auto; display: flex; justify-content: center; align-items: start; scrollbar-width: none;">
+                
+                <style>
+                    .live-resume-document-frame {
+                        width: 820px;
+                        height: 1150px;
+                        border: none;
+                        border-radius: 6px;
+                        box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+                        transform: scale(0.72);
+                        transform-origin: top center;
+                        background-color: white;
+                    }
+                </style>
+
+                <iframe src="{% url 'resume_preview' template.id %}" class="live-resume-document-frame" id="live-preview-viewport"></iframe>
+
+            </div>
+        </div> 
+
+    </div> 
+</div>
+
+<script>
+    function toTitleCase(text) {
+        return text.toLowerCase().replace(/\b\w/g, function(char) {
+            return char.toUpperCase();
+        });
+    }
+
+    // --- 📡 THE POSTMESSAGE BROADCASTER ---
+    function broadcastGhostBlock(field, value, fallback) {
+        const iframe = document.getElementById('live-preview-viewport');
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({
+                type: 'INJECT_GHOST_BLOCK',
+                section: 'SKILL',
+                field: field,
+                value: value,
+                fallback: fallback
+            }, '*');
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // Auto-refresh sub window
+        const previewIframe = document.getElementById('live-preview-viewport');
+        if (previewIframe) {
+            previewIframe.contentWindow.location.reload();
+        }
+
+        // We use a robust selector just in case Django named it 'name' instead of 'skill_name'
+        const nameInput = document.querySelector('input[name="skill_name"], input[name="name"]');
+        if (nameInput) {
+            nameInput.addEventListener('input', function(event) {
+                let text = toTitleCase(event.target.value);
+                event.target.value = text;
+                // Broadcast it specifically to the 'skill_name' ID receiver!
+                broadcastGhostBlock('skill_name', text, 'Typing New Skill...');
+            });
+        } else {
+            console.warn("Could not find the Skill Name input field!");
+        }
+    });
+</script>
+{% endblock %}

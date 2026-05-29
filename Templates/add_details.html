@@ -1,0 +1,284 @@
+{% extends 'nav.html' %}
+{% load static %}
+{% block content %}
+<style>
+    body {
+        background-image: url("{% static 'dark.jpg' %}");
+        background-size: cover; background-position: center; background-attachment: fixed;
+    }
+    .glass-panel {
+        background-color: rgba(255, 255, 255, 0.40);
+        backdrop-filter: blur(10px); border: none;
+    }
+    
+    /* --- AI Enhancer Animation --- */
+    @keyframes pulse-glow {
+        0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(13, 110, 253, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+    }
+    .ai-thinking {
+        animation: pulse-glow 1.5s infinite;
+    }
+
+    /* --- Live Preview & Scroll Adjustments --- */
+    .editor-container {
+        height: 85vh; overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none; 
+    }
+    .editor-container::-webkit-scrollbar { display: none; }
+    .preview-container {
+        height: 85vh; overflow-y: auto; background-color: #525659; 
+        display: flex; justify-content: center; padding: 25px; border-radius: 10px; overflow: hidden;
+    }
+</style>
+
+<div class="container-fluid py-4 px-4">
+    <div class="row mb-3 justify-content-center">
+        <div class="col-12 text-center text-white">
+            <h2 class="fw-bold">Step 5: Additional Details</h2>
+            <p>Add your Projects, Certifications, Tools, and Soft Skills.</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between position-relative text-white font-monospace small">
+                <div class="text-center text-success"><div class="bg-success text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">✓</div><br>Personal</div>
+                <div class="text-center text-success"><div class="bg-success text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">✓</div><br>Experience</div>
+                <div class="text-center text-success"><div class="bg-success text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">✓</div><br>Education</div>
+                <div class="text-center text-success"><div class="bg-success text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">✓</div><br>Skills</div>
+                <div class="text-center fw-bold text-primary"><div class="bg-primary text-light rounded-circle d-inline-block text-center mb-1 fw-bold" style="width:24px; height:24px; line-height:24px;">5</div><br>Extra Details</div>
+                
+                <div class="progress position-absolute top-25 start-0 translate-middle-y w-100" style="height: 2px; z-index: -1; margin-top: 12px;">
+                    <div class="progress-bar bg-info" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-5 editor-container p-4 rounded-4 shadow-lg glass-panel mb-4 mb-lg-0">
+            
+            <form method="post" class="mb-5 border-bottom border-secondary pb-4">
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="alert alert-danger rounded-4 shadow-sm">{{ form.errors }}</div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Category</label>
+                        {{ form.category }}
+                    </div>
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label fw-bold">Title / Name</label>
+                        {{ form.title }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Link (Optional)</label>
+                    {{ form.link }}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Description (Optional)</label>
+                    <div class="position-relative">
+                        {{ form.description }}
+                        <button type="button" id="ai-enhance-btn" onclick="callAIEnhancer()" class="btn btn-dark btn-sm position-absolute bottom-0 end-0 m-2 rounded-pill shadow-sm fw-bold px-3 py-1">
+                            ✨ AI Enhance
+                        </button>
+                    </div>
+                    <small class="text-primary fw-bold mt-2 d-block">Type a basic summary and click AI Enhance!</small>
+                </div>
+
+                <button type="submit" class="btn btn-outline-dark rounded-pill px-4 fw-bold shadow">✚ Save Details</button>
+            </form>
+
+            <h4 class="fw-bold mb-3">Saved Items</h4>
+            
+                {% if details %}
+                <div class="d-flex flex-column gap-4 mb-4">
+                    
+                    {% regroup details by category as grouped_details %}
+                    
+                    {% for group in grouped_details %}
+                        
+                        <div class="bg-white p-4 rounded-4 shadow-sm border border-secondary">
+                            
+                            <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">{{ group.grouper }}</h5>
+                            
+                            <div class="d-flex flex-column gap-3">
+                                {% for item in group.list %}
+                                    <div class="position-relative border-start border-3 border-primary ps-3 py-1">
+                                        
+                                        <a href="{% url 'delete_detail' template.id item.id %}" 
+                                           class="btn btn-sm btn-light position-absolute top-0 end-0 rounded-4 shadow-sm py-0 px-2" 
+                                           onclick="return confirm('Remove this item?');" title="Delete">❌</a>
+                                        
+                                        <h6 class="fw-bold text-primary mb-1">{{ item.title }}</h6>
+                                        {% if item.link %}
+                                            <a href="{{ item.link }}" target="_blank" class="small text-info text-decoration-none d-block mb-1">🔗 View Link</a>
+                                        {% endif %}
+                                        {% if item.description %}
+                                            <p class="mb-0 small text-muted">{{ item.description }}</p>
+                                        {% endif %}
+                                        
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted fst-italic">No additional items added yet.</p>
+            {% endif %}
+            
+            <div class="d-flex flex-column-reverse flex-md-row justify-content-between gap-3 mt-4">
+                <a href="{% url 'add_skill' template.id %}" class="btn btn-dark rounded-pill px-5 fw-bold shadow me-auto">« Previous Page</a>
+                <a href="{% url 'resume_finalize' template.id %}" class="btn btn-primary rounded-pill px-4 px-md-5 py-2 fw-bold shadow text-center">Generate Resume ✨</a>
+            </div>
+            
+        </div> 
+
+        <div class="col-lg-7 preview-container shadow-lg">
+            <div style="width: 100%; height: 100%; overflow-y: auto; display: flex; justify-content: center; align-items: start; scrollbar-width: none;">
+                <style>
+                    .live-resume-document-frame {
+                        width: 820px; height: 1150px; border: none; border-radius: 6px;
+                        box-shadow: 0 12px 35px rgba(0,0,0,0.35); transform: scale(0.72);
+                        transform-origin: top center; background-color: white;
+                    }
+                </style>
+                <iframe src="{% url 'resume_preview' template.id %}" class="live-resume-document-frame" id="live-preview-viewport"></iframe>
+            </div>
+        </div> 
+
+    </div> 
+</div>
+
+<script>
+    function toTitleCase(text) {
+        return text.toLowerCase().replace(/\b\w/g, function(char) { return char.toUpperCase(); });
+    }
+
+    // --- 📡 THE POSTMESSAGE BROADCASTER ---
+    function broadcastGhostBlock(field, value, fallback) {
+        const iframe = document.getElementById('live-preview-viewport');
+        const categorySelect = document.querySelector('select[name="category"]');
+        let activeCategory = "Extra Details";
+        
+        if (categorySelect && categorySelect.options[categorySelect.selectedIndex]) {
+            activeCategory = categorySelect.options[categorySelect.selectedIndex].text;
+        }
+
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({
+                type: 'INJECT_GHOST_BLOCK',
+                section: 'DETAILS',
+                activeCategory: activeCategory, // Tell the template which category header to draw!
+                field: field,
+                value: value,
+                fallback: fallback
+            }, '*');
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const previewIframe = document.getElementById('live-preview-viewport');
+        if (previewIframe) { previewIframe.contentWindow.location.reload(); }
+
+        // Field Listeners
+        const inputs = [
+            { name: 'title', id: 'title', fallback: 'Typing New Title...', titleCase: true },
+            { name: 'description', id: 'description', fallback: '...', titleCase: false }
+        ];
+
+        inputs.forEach(field => {
+            const inputElement = document.querySelector(`[name="${field.name}"]`);
+            if (inputElement) {
+                inputElement.addEventListener('input', function(event) {
+                    let text = event.target.value;
+                    if (field.titleCase) {
+                        text = toTitleCase(text);
+                        event.target.value = text;
+                    }
+                    broadcastGhostBlock(field.id, text, field.fallback);
+                });
+            }
+        });
+
+        // Trigger update when Category changes!
+        const catSelect = document.querySelector('select[name="category"]');
+        if (catSelect) {
+            catSelect.addEventListener('change', function() {
+                const currentTitle = document.querySelector('input[name="title"]').value;
+                broadcastGhostBlock('title', currentTitle, 'Typing New Title...');
+            });
+        }
+    });
+
+    // --- 🚀 REAL AI LOGIC WITH TYPEWRITER EFFECT ---
+    let typingTimer;
+
+    function callAIEnhancer() {
+        const inputField = document.querySelector('textarea[name="description"]');
+        const btn = document.getElementById('ai-enhance-btn');
+        const rawText = inputField.value;
+
+        if (rawText.trim() === '') {
+            alert("Please type a basic description first! (e.g., 'I built a website using Django')");
+            return;
+        }
+
+        const originalBtnText = btn.innerHTML;
+        btn.innerHTML = '⏳ Thinking...';
+        btn.classList.add('ai-thinking');
+        btn.disabled = true;
+
+        fetch("{% url 'enhance_bullet' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}' 
+            },
+            body: JSON.stringify({ text: rawText })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                
+                clearInterval(typingTimer);
+                inputField.value = "";
+                inputField.focus();
+
+                let fullText = data.enhanced_text;
+                let letterIndex = 0;
+
+                // TYPEWRITER EFFECT: Blast it to both local input and iframe ghost block!
+                typingTimer = setInterval(() => {
+                    if (letterIndex < fullText.length) {
+                        inputField.value += fullText.charAt(letterIndex);
+                        broadcastGhostBlock('description', inputField.value, '...');
+                        letterIndex++;
+                    } else {
+                        clearInterval(typingTimer);
+                    }
+                }, 15); 
+
+            } else {
+                alert('Oops! AI enhancement failed: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Something went wrong connecting to the AI.');
+        })
+        .finally(() => {
+            btn.innerHTML = originalBtnText;
+            btn.classList.remove('ai-thinking');
+            btn.disabled = false;
+        });
+    }
+</script>
+{% endblock %}

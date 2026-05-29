@@ -1,0 +1,101 @@
+{% extends 'nav.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 bg-white p-5 rounded-4 shadow-lg">
+            <h3 class="fw-bold mb-3">📈Check ATS Score</h3>
+            <p class="text-muted">Upload a PDF resume and paste the job description to get your match score.</p>
+            
+            <div class="mb-4">
+                <label class="fw-bold mb-2">1. Upload Resume (PDF format only):</label>
+                <input type="file" id="resume-pdf" class="form-control form-control-lg" accept=".pdf">
+            </div>
+
+            <div class="mb-4">
+                <label class="fw-bold mb-2">2. Paste The Job Description:</label>
+                <textarea id="job-desc" class="form-control" rows="6" placeholder="Paste the Job Description here..."></textarea>
+            </div>
+            
+            <button id="scan-btn" onclick="runATS()" class="btn btn-primary fw-bold px-4 py-2 rounded-pill shadow-sm">
+                🔍 Scan PDF Resume
+            </button>
+
+            <div id="ats-results" class="mt-5 p-4 border border-2 rounded-4 shadow-sm" style="display: none; background: #f8f9fa;">
+                <h4 class="fw-bold text-center">Match Score</h4>
+                <div class="display-1 fw-bold text-center text-primary mb-3" id="score-display">0%</div>
+                
+                <h6 class="fw-bold">Missing Keywords to Add:</h6>
+                <div id="keywords-display" class="d-flex flex-wrap gap-2">
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function runATS() {
+        const fileInput = document.getElementById('resume-pdf');
+        const jobDesc = document.getElementById('job-desc').value;
+        const btn = document.getElementById('scan-btn');
+        const resultsDiv = document.getElementById('ats-results');
+        const scoreDisplay = document.getElementById('score-display');
+        const keywordsDisplay = document.getElementById('keywords-display');
+
+        // Validation
+        if (fileInput.files.length === 0) { alert("Please upload a PDF resume first!"); return; }
+        if (!jobDesc.trim()) { alert("Please paste a job description!"); return; }
+
+        btn.innerHTML = '⏳ Extracting PDF & Scanning...';
+        btn.disabled = true;
+
+        // Build the FormData object to hold the file and text
+        const formData = new FormData();
+        formData.append('resume_pdf', fileInput.files[0]);
+        formData.append('job_description', jobDesc);
+
+        fetch("{% url 'ats_scanner' %}", {
+            method: 'POST',
+            headers: {
+                // Notice we do NOT set Content-Type here. The browser handles it automatically for FormData.
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                resultsDiv.style.display = 'block';
+                
+                // Animate the score counting up
+                let currentScore = 0;
+                let targetScore = data.data.score;
+                let interval = setInterval(() => {
+                    if(currentScore >= targetScore) { 
+                        clearInterval(interval); 
+                        scoreDisplay.innerText = targetScore + '%'; // Ensure it lands exactly on the score
+                    } else { 
+                        currentScore++; 
+                        scoreDisplay.innerText = currentScore + '%'; 
+                    }
+                }, 20);
+
+                // Build the keyword badges
+                keywordsDisplay.innerHTML = '';
+                data.data.missing_keywords.forEach(keyword => {
+                    keywordsDisplay.innerHTML += `<span class="badge bg-danger p-2 fs-6 shadow-sm">${keyword}</span>`;
+                });
+            } else {
+                alert(data.message || "Scan failed.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("A network error occurred.");
+        })
+        .finally(() => {
+            btn.innerHTML = '🔍 Scan PDF Resume';
+            btn.disabled = false;
+        });
+    }
+</script>
+{% endblock %}

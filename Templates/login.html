@@ -1,0 +1,52 @@
+{% extends 'nav.html' %}
+{% load static %} 
+{% block content %}
+
+<style>
+    body {
+        background-image: url("{% static 'log-back.jpeg' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;  
+        background-repeat: no-repeat;
+    }
+
+    .glass-panel {
+        background-color: rgba(255, 255, 255, 0.30);
+        backdrop-filter: blur(8px);
+    }
+
+</style>
+
+<div class="container">
+    <div class="row min-vh-100 justify-content-center align-items-center">
+        <div class="col-11 col-md-6 col-lg-4 p-5 rounded-4 shadow-lg glass-panel">
+
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <h1 class="fw-bold">Welcome Back!</h1>
+                <div class="mb-3 mt-3">
+                    <label for="Email1" class="form-label">Email address</label>
+                    {{form.email}}
+                </div>
+                <div class="mb-3 ">
+                    <label for="Password1" class="form-label">Password</label>
+                    {{form.password}}
+                </div>
+                <button type="submit" class="btn mt-3 btn-success rounded-pill w-100">Submit</button>
+                <a class="btn rounded-pill w-100 mt-4" href="{% url 'password_reset' %}">Forget Password ?</a>
+                <a class="btn btn-info rounded-pill w-100 mt-3" href="{% url 'signup' %}">Signup</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

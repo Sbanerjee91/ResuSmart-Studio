@@ -1,0 +1,267 @@
+{% extends 'nav.html' %}
+{% load static %} 
+
+{% block content %}
+
+<style>
+    body {
+        background-image: url("{% static 'home-back.png' %}");
+        background-size: cover; 
+        background-position: center;
+        background-attachment: fixed; 
+        background-repeat: no-repeat;
+    }
+
+    .pop-out-wrapper {
+        position: relative;
+        display: inline-block;
+        text-align: center;
+        margin: 20px; 
+    }
+
+    .round-logo-btn {
+        text-decoration: none;
+        width: 65px;
+        height: 65px;
+        border-radius: 10%;
+        background-color: transparent; 
+        color: white;
+        border: 2px solid white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        position: relative;
+        
+        /* Z-index 2 keeps the button ON TOP of the label */
+        z-index: 2; 
+        transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .round-logo-btn:hover {
+        transform: scale(1.08);
+        background-color: #0e0d0d; 
+        border-color: black;
+    }
+
+    .pop-out-label {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        
+        bottom: 10px; 
+        z-index: 1; 
+        opacity: 0;
+        
+        background-color: transparent;
+        color: rgb(255, 255, 255);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        white-space: nowrap;
+        pointer-events: none; 
+        
+
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    }
+
+    .pop-out-wrapper:hover .pop-out-label {
+        bottom: -40px; 
+        opacity: 1;
+    }
+</style>
+
+<div class="container min-vh-100 d-flex flex-column justify-content-between py-5">
+    
+    <div class="row pt-5 mt-4">
+        <div class="col-12 text-center animate-fade-in">
+            {% if user.is_authenticated %}
+                <h1 class="display-2 fw-bold text-dark mb-2" style="letter-spacing: -1px;">
+                    <span id="time-greeting">Hello</span>, 
+                    <span class="text-white fst-italic fw-extrabold" style="text-shadow: 0 4px 12px rgba(0,0,0,0.15);">{{ user.first_name }}</span>
+                </h1>
+                <p class="fs-5 text-dark opacity-75 fw-medium" id="time-subheading">What are we building today?</p>
+            {% else %}
+                <h1 class="display-2 fw-bold text-dark mb-2" style="letter-spacing: -1px;">
+                    <span id="guest-greeting">Hello</span>, <span class="text-white fst-italic fw-extrabold" style="text-shadow: 0 4px 12px rgba(0,0,0,0.15);">Guest</span>
+                </h1>
+                <p class="fs-5 text-dark opacity-75 fw-medium">Sign in to unlock your professional dashboard.</p>
+                <div class="mt-4">
+                    <button class="btn btn-outline-light rounded-pill py-2 px-5 fw-bold shadow fs-5" data-bs-toggle="modal" data-bs-target="#choice">
+                        Get Started
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="row justify-content-center pb-5 mb-4">
+        <div class="col-12 col-md-11 col-lg-9"> <div class="p-4 rounded-5 text-center shadow-lg" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15);">
+                <p class="text-white small fw-bold text-uppercase tracking-wider mb-3 opacity-75" style="letter-spacing: 2px; font-size: 0.75rem;">Select a Workspace Utility</p>
+                
+                <div class="d-flex flex-row justify-content-center align-items-center flex-wrap gap-2">
+                    
+                    <div class="pop-out-wrapper mx-2">
+                        <div class="pop-out-label">Create Resume</div>
+                        <a class="round-logo-btn" href="{% url 'select_template' %}">⌸</a>
+                    </div>
+
+                    <div class="pop-out-wrapper mx-2">
+                        <div class="pop-out-label">Cover Letter</div>
+                        <a class="round-logo-btn" href="{% url 'select_cover_letter_template' %}">✉︎</a>
+                    </div>
+
+                    <div class="pop-out-wrapper mx-2">
+                        <div class="pop-out-label">ATS Scanner</div>
+                        <a class="round-logo-btn" href="{% url 'ats_scanner_page' %}">⟡</a>
+                    </div>
+                    
+                    <div class="pop-out-wrapper mx-2">
+                        <div class="pop-out-label" id="pdf-label">To PDF</div>
+                        <button class="round-logo-btn" id="pdf-btn" onclick="document.getElementById('pdf-file-uploader').click()">⚯</button>
+                        <input type="file" id="pdf-file-uploader" accept=".jpg, .jpeg, .png, .txt" style="display: none;" onchange="processPDFConversion(this)">
+                    </div>                
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<div class="modal fade" id="choice" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background-color: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold fst-italic text-dark" id="Label">Setup To Start</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <a href="{% url 'login' %}" class="btn btn-outline-dark rounded-pill px-4 fw-bold me-2">Login</a>
+                <a href="{% url 'signup' %}" class="btn btn-dark rounded-pill px-4 fw-bold ms-2">Signup</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+    async function processPDFConversion(inputElement) {
+        const file = inputElement.files[0];
+        if (!file) return;
+
+        const btn = document.getElementById('pdf-btn');
+        const label = document.getElementById('pdf-label');
+        const originalIcon = btn.innerHTML;
+        const originalLabel = label.innerHTML;
+
+        if (!file.type.startsWith('image/') && file.type !== 'text/plain') {
+            alert("Sorry, we only support Images (JPG/PNG) and Text (.txt) files right now!");
+            inputElement.value = ""; 
+            return;
+        }
+
+        btn.innerHTML = '⏳';
+        label.innerHTML = 'Converting...';
+        label.style.bottom = '-40px'; 
+        label.style.opacity = '1';
+
+        try {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+            const reader = new FileReader();
+            const safeFileName = file.name.split('.')[0] + '_converted.pdf';
+
+            if (file.type.startsWith('image/')) {
+                reader.onload = function(event) {
+                    const imgData = event.target.result;
+                    const img = new Image();
+                    
+                    img.onload = function() {
+                        const pdfWidth = pdf.internal.pageSize.getWidth();
+                        const pdfHeight = pdf.internal.pageSize.getHeight();
+                        
+                        const ratio = Math.min(pdfWidth / img.width, pdfHeight / img.height);
+                        const scaledWidth = img.width * ratio;
+                        const scaledHeight = img.height * ratio;
+                        
+                        const imgX = (pdfWidth - scaledWidth) / 2;
+                        const imgY = 10; 
+                        
+                        pdf.addImage(imgData, 'JPEG', imgX, imgY, scaledWidth, scaledHeight);
+                        pdf.save(safeFileName);
+                        resetUIAfterConversion(btn, label, originalIcon, originalLabel, inputElement);
+                    };
+                    img.src = imgData;
+                };
+                reader.readAsDataURL(file);
+            } 
+            else if (file.type === 'text/plain') {
+                reader.onload = function(event) {
+                    const text = event.target.result;
+                    const splitText = pdf.splitTextToSize(text, 180); 
+                    pdf.text(splitText, 15, 20);
+                    pdf.save(safeFileName);
+                    resetUIAfterConversion(btn, label, originalIcon, originalLabel, inputElement);
+                };
+                reader.readAsText(file);
+            }
+            
+        } catch (error) {
+            console.error('Conversion failed:', error);
+            alert('Something went wrong during the conversion process.');
+            resetUIAfterConversion(btn, label, originalIcon, originalLabel, inputElement);
+        }
+    }
+
+    function resetUIAfterConversion(btn, label, originalIcon, originalLabel, inputElement) {
+        btn.innerHTML = '✅';
+        label.innerHTML = 'Downloaded!';
+        
+        setTimeout(() => { 
+            btn.innerHTML = originalIcon; 
+            label.innerHTML = originalLabel;
+            label.style.bottom = ''; 
+            label.style.opacity = '';
+            inputElement.value = ""; 
+        }, 2500);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const hours = new Date().getHours();
+        
+        let greeting = "Hello";
+        let subheading = "What are we building today?";
+
+        if (hours >= 5 && hours < 12) {
+            greeting = "Good Morning";
+            subheading = "Ready to build something great today?";
+        } else if (hours >= 12 && hours < 17) {
+            greeting = "Good Afternoon";
+            subheading = "Let's make some productive progress this afternoon.";
+        } else if (hours >= 17 && hours < 22) {
+            greeting = "Good Evening";
+            subheading = "Perfect evening to work on your career milestones.";
+        } else {
+            greeting = "Good Night";
+            subheading = "Burning the midnight oil? Let's wrap up your resume.";
+        }
+
+        const greetingElement = document.getElementById("time-greeting");
+        const subheadingElement = document.getElementById("time-subheading");
+        
+        if (greetingElement) greetingElement.innerHTML = greeting;
+        if (subheadingElement) subheadingElement.innerHTML = subheading;
+
+        const guestGreeting = document.getElementById("guest-greeting");
+        if (guestGreeting) guestGreeting.innerHTML = greeting;
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Executive Cover Letter Sheet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #fcfbfa;
+            font-family: 'Inter', sans-serif;
+            color: #2c2a29;
+            line-height: 1.7;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .a4-paper {
+            width: 100%;
+            max-width: 740px;
+            background: #fcfbfa;
+            position: relative;
+            min-height: 1040px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        /* 🟫 Modern Top Banner Header */
+        .top-banner {
+            background-color: #b09473;
+            color: #ffffff;
+            padding: 50px;
+        }
+        .top-banner h1 {
+            font-family: 'Bodoni Moda', serif;
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 5px;
+        }
+        .top-banner p.designation {
+            font-family: 'Bodoni Moda', serif;
+            font-style: italic;
+            font-size: 1.4rem;
+            color: #f5eedf;
+            margin-bottom: 25px;
+            text-transform: capitalize;
+        }
+        .contact-info {
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: #fdfbf7;
+            line-height: 1.6;
+        }
+
+        /* 📄 Content Area Styling */
+        .main-content {
+            padding: 50px;
+            flex-grow: 1;
+        }
+        .date-container {
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            color: #555555;
+        }
+        .recipient-block {
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .salutation {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+        .letter-content {
+            font-size: 0.95rem;
+            text-align: justify;
+            margin-bottom: 40px;
+        }
+        .letter-content br {
+            content: "";
+            margin: 12px 0;
+            display: block;
+        }
+        
+        /* ✍️ Signature Rendering Component */
+        .closing-section {
+            margin-bottom: 30px;
+        }
+        .signature-img {
+            max-height: 60px;
+            max-width: 220px;
+            margin: 10px 0;
+            display: block;
+        }
+        .sender-name-bottom {
+            font-weight: 700;
+            color: #000000;
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+        .sender-title-bottom {
+            font-size: 0.9rem;
+            color: #666666;
+            font-style: italic;
+        }
+
+        /* 🟫 Bottom Accent Ribbon Strip */
+        .bottom-strip {
+            background-color: #b09473;
+            height: 45px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="a4-paper">
+        <div>
+            <!-- Top Header Banner Segment -->
+            <div class="top-banner">
+                <h1 id="view-sender_name">Your Name</h1>
+                <p class="designation" id="view-job_title">Target Designation</p>
+                <div class="contact-info">
+                    <div>📞 <span id="view-sender_phone">+91 0000000000</span></div>
+                    <div>✉️ <span id="view-sender_email">yourname@example.com</span></div>
+                    <div>📍 <span id="view-sender_location">Your City, India</span></div>
+                </div>
+            </div>
+
+            <!-- Main Dynamic Text Block -->
+            <div class="main-content">
+                <div class="date-container" id="view-current_date">May 29, 2026</div>
+                
+                <!-- Recipient Meta Data Block -->
+                <div class="recipient-block">
+                    <div style="font-weight: 700;" id="view-recipient_name">Hiring Manager Name</div>
+                    <div id="view-company_name">Company Name Inc.</div>
+                </div>
+
+                <!-- Live Salutation Bridge -->
+                <div class="salutation">
+                    Dear <span id="view-salutation_name">Hiring Team</span>,
+                </div>
+                
+                <div class="letter-content" id="view-letter_body">
+                    Your message draft content updates here live...
+                </div>
+                
+                <div class="closing-section">
+                    <p>Kind regards,</p>
+                    
+                    <!-- Dynamic Signature Canvas Target Node -->
+                    <img id="view-signature_image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Signature" class="signature-img" style="display: none;">
+                    
+                    <div class="sender-name-bottom" id="view-sender_name_fallback">Your Name</div>
+                    <div class="sender-title-bottom">Applicant</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footnote Accent Banner Layout -->
+        <div class="bottom-strip"></div>
+    </div>
+
+    <script>
+        // Automatic setup for current date formatting metrics
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('view-current_date').innerText = new Date().toLocaleDateString('en-US', options);
+
+        // Single pass layout observer to synchronize nested fallback locations cleanly
+        const observer = new MutationObserver(() => {
+            const basicName = document.getElementById('view-sender_name').innerText;
+            const recipientName = document.getElementById('view-recipient_name').innerText;
+            
+            document.getElementById('view-sender_name_fallback').innerText = basicName || "Your Name";
+            document.getElementById('view-salutation_name').innerText = recipientName || "Hiring Team";
+        });
+        
+        observer.observe(document.getElementById('view-sender_name'), { childList: true, characterData: true, subtree: true });
+        observer.observe(document.getElementById('view-recipient_name'), { childList: true, characterData: true, subtree: true });
+    </script>
+</body>
+</html>

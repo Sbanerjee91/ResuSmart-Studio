@@ -1,0 +1,105 @@
+{% extends 'nav.html' %}
+{% block content %}
+<style>
+    /* Styling for the Right-Side Preview */
+    .preview-container {
+        height: 85vh;
+        overflow-y: auto;
+        background-color: #525659; /* Classic PDF viewer background */
+        display: flex;
+        justify-content: center;
+        padding: 30px;
+    }
+    
+    .a4-paper {
+        background: white;
+        width: 210mm;
+        min-height: 297mm; /* Standard A4 size */
+        padding: 20mm;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        transform: scale(0.85); /* Scales it down slightly to fit smaller laptop screens */
+        transform-origin: top center;
+    }
+
+    /* Editor Scrolling */
+    .editor-container {
+        height: 85vh;
+        overflow-y: auto;
+    }
+</style>
+
+<div class="container-fluid py-3 px-4">
+    <div class="row">
+        
+        <div class="col-md-5 editor-container bg-white p-4 border rounded shadow-sm">
+            <h4 class="fw-bold mb-4">🛠️ Live Resume Editor</h4>
+            
+            <div class="mb-4">
+                <h6 class="fw-bold text-primary border-bottom pb-2">Personal Details</h6>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Full Name</label>
+                    <input type="text" class="form-control" oninput="updatePreview('name', this.value)" placeholder="e.g. John Doe">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Professional Title</label>
+                    <input type="text" class="form-control" oninput="updatePreview('title', this.value)" placeholder="e.g. Full Stack Developer">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email Address</label>
+                    <input type="email" class="form-control" oninput="updatePreview('email', this.value)" placeholder="john@example.com">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="fw-bold text-primary border-bottom pb-2">Professional Summary</h6>
+                <textarea class="form-control" rows="4" oninput="updatePreview('summary', this.value)" placeholder="Briefly describe your core skills and career goals..."></textarea>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="fw-bold text-primary border-bottom pb-2">Education</h6>
+                <input type="text" class="form-control mb-2" oninput="updatePreview('college', this.value)" placeholder="e.g. Uttaranchal College of Science and Technology">
+                <input type="text" class="form-control" oninput="updatePreview('degree', this.value)" placeholder="e.g. B.Sc. Computer Science">
+            </div>
+        </div>
+
+        <div class="col-md-7 preview-container rounded">
+            
+            <div class="a4-paper">
+                <div class="text-center" style="border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
+                    <h1 id="preview-name" style="font-size: 3rem; font-weight: 900; margin-bottom: 5px;">Your Name</h1>
+                    <h3 id="preview-title" style="color: #666; font-weight: 400;">Professional Title</h3>
+                    <p id="preview-email" style="margin-top: 10px; font-size: 1rem;">your.email@example.com</p>
+                </div>
+                
+                <div class="mb-4">
+                    <h5 style="text-transform: uppercase; font-weight: bold; color: #222; margin-bottom: 10px;">Profile Summary</h5>
+                    <p id="preview-summary" style="line-height: 1.6; color: #444;">Your professional summary will appear here as you type...</p>
+                </div>
+
+                <div class="mb-4">
+                    <h5 style="text-transform: uppercase; font-weight: bold; color: #222; margin-bottom: 10px;">Education</h5>
+                    <h6 id="preview-college" style="font-weight: bold; margin-bottom: 2px;">University Name</h6>
+                    <p id="preview-degree" style="font-style: italic; color: #555;">Degree Name</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function updatePreview(field, value) {
+        const targetElement = document.getElementById('preview-' + field);
+        
+        if (targetElement) {
+            // If the user deletes everything, we don't want the formatting to collapse, 
+            // so we keep a blank space.
+            if (value.trim() === '') {
+                targetElement.innerHTML = '&nbsp;'; 
+            } else {
+                targetElement.innerText = value;
+            }
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Left Sidebar Editorial Cover Letter Sheet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            color: #111111;
+            line-height: 1.65;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .a4-paper {
+            width: 100%;
+            max-width: 740px;
+            background: #ffffff;
+            position: relative;
+            min-height: 1040px;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 🟄 Striking Solid Left Navy Sidebar Accent matching six.png */
+        .left-accent-sidebar {
+            width: 75px;
+            background-color: #050b3b; /* Premium Deep Navy Blue */
+            flex-shrink: 0;
+        }
+
+        /* 📄 Main Content Container Document Pane */
+        .right-document-pane {
+            flex-grow: 1;
+            padding: 50px 45px 50px 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 📋 Contact Metadata block with unique accent timeline layout graphics */
+        .header-section {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 40px;
+            margin-top: 20px;
+        }
+        
+        /* Thin vertical timeline layout line graphic matching the template image */
+        .header-line-accent {
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 10px;
+            width: 1.5px;
+            background-color: #111111;
+        }
+        .header-line-accent::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: -3px;
+            width: 7px;
+            height: 7px;
+            background-color: #111111;
+            border-radius: 50%;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+            color: #222222;
+        }
+        .contact-item:first-child {
+            margin-bottom: 18px;
+        }
+        .contact-item h1 {
+            font-size: 1.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #000000;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+        }
+        .contact-item.job-title h2 {
+            font-size: 1.15rem;
+            font-weight: 400;
+            color: #444444;
+            text-transform: capitalize;
+        }
+        .contact-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            font-size: 1.05rem;
+            margin-right: 15px;
+        }
+
+        /* Main Body Spaces Layout */
+        .main-body-workspace {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .date-container {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 25px;
+            color: #000000;
+        }
+        .recipient-info {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            color: #222222;
+        }
+        .salutation {
+            margin-bottom: 25px;
+            font-size: 1rem;
+        }
+        .letter-content {
+            font-size: 0.95rem;
+            color: #222222;
+            text-align: justify;
+            margin-bottom: 40px;
+        }
+        .letter-content br {
+            content: "";
+            margin: 12px 0;
+            display: block;
+        }
+        
+        /* ✍️ Dynamic Signature Node Slot */
+        .closing-section {
+            margin-top: auto;
+            margin-bottom: 10px;
+        }
+        .signature-img {
+            max-height: 55px;
+            max-width: 200px;
+            margin: 8px 0;
+            display: block;
+        }
+        .sender-name-bottom {
+            color: #111111;
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="a4-paper">
+        <div class="left-accent-sidebar"></div>
+
+        <div class="right-document-pane">
+            
+            <div class="header-section">
+                <div class="header-line-accent"></div>
+                
+                <div class="contact-item">
+                    <span class="contact-icon">👤</span>
+                    <h1 id="view-sender_name">Your Name</h1>
+                </div>
+                <div class="contact-item job-title" style="margin-top: -12px; margin-bottom: 18px;">
+                    <span class="contact-icon"></span>
+                    <h2 id="view-job_title">Target Designation</h2>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <span id="view-sender_phone">+91 0000000000</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">✉️</span>
+                    <span id="view-sender_email">yourname@example.com</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <span id="view-sender_location">Your City, India</span>
+                </div>
+            </div>
+
+            <div class="main-body-workspace">
+                <div class="date-container" id="view-current_date">29th May 2026</div>
+                
+                <div class="recipient-info">
+                    <div style="font-weight: 700;" id="view-recipient_name">Hiring Manager Name</div>
+                    <div id="view-company_name">Company Name Inc.</div>
+                </div>
+
+                <div class="salutation">
+                    Dear <span id="view-salutation_name">Hiring Team</span>,
+                </div>
+                
+                <div class="letter-content" id="view-letter_body">
+                    Your text content will sync here live...
+                </div>
+                
+                <div class="closing-section">
+                    <p>Kind regards,</p>
+                    
+                    <img id="view-signature_image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Signature" class="signature-img" style="display: none;">
+                    
+                    <div class="sender-name-bottom" id="view-sender_name_fallback">Your Name</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Automatic runtime setup tracking current date localization metrics
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        document.getElementById('view-current_date').innerText = new Date().toLocaleDateString('en-GB', options);
+
+        // Active layout mutation tracking engine syncs nested fallback destinations seamlessly
+        const observer = new MutationObserver(() => {
+            const dynamicName = document.getElementById('view-sender_name').innerText;
+            const dynamicRecipient = document.getElementById('view-recipient_name').innerText;
+            
+            document.getElementById('view-sender_name_fallback').innerText = dynamicName || "Your Name";
+            document.getElementById('view-salutation_name').innerText = dynamicRecipient || "Hiring Team";
+        });
+        observer.observe(document.getElementById('view-sender_name'), { childList: true, characterData: true, subtree: true });
+        observer.observe(document.getElementById('view-recipient_name'), { childList: true, characterData: true, subtree: true });
+    </script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+{% extends 'nav.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body { background-color: #f4f6f9; }
+    .studio-panel { height: 88vh; overflow-y: auto; }
+    .studio-panel::-webkit-scrollbar { display: none; }
+    .studio-panel { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .preview-container {
+        background: #525659;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 30px;
+        border-radius: 16px;
+    }
+    .live-frame {
+        width: 100%;
+        height: 1120px;
+        max-width: 800px;
+        border: none;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        border-radius: 4px;
+    }
+
+    /* FEATURE 1: Visual Auto-Capitalization */
+    #cl-form input { text-transform: capitalize; }
+</style>
+
+<div class="container-fluid px-4 py-3">
+    <div class="row g-4">
+        
+        <div class="col-lg-5 studio-panel">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="fw-bold text-dark mb-1">Cover Letter Studio</h3>
+                        <p class="text-muted small mb-0">Template ID: {{ template.id }}</p>
+                    </div>
+                    <a href="{% url 'select_cover_letter_template' %}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">🔄 Change Layout</a>
+                </div>
+
+                <form id="cl-form" method="POST" action="{% url 'save_cover_letter' template.id %}">
+                    {% csrf_token %}
+                    
+                    <h5 class="fw-bold text-primary mb-3">Your Information</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Full Name</label>
+                            <input type="text" name="sender_name" class="form-control rounded-3" placeholder="John Doe" required oninput="updateLivePreview()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Email Address</label>
+                            <input type="email" name="sender_email" class="form-control rounded-3" placeholder="johndoe@example.com" required style="text-transform: none !important;" oninput="updateLivePreview()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Phone Number</label>
+                            <input type="text" name="sender_phone" class="form-control rounded-3" placeholder="+91 9876543210" oninput="updateLivePreview()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Location</label>
+                            <input type="text" name="sender_location" class="form-control rounded-3" placeholder="Dehradun, India" oninput="updateLivePreview()">
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold text-primary mb-3">Recipient Information</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Hiring Manager Name</label>
+                            <input type="text" name="recipient_name" class="form-control rounded-3" placeholder="Jane Smith" oninput="updateLivePreview()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-secondary">Company Name</label>
+                            <input type="text" name="company_name" class="form-control rounded-3" placeholder="Google Inc." required oninput="updateLivePreview()">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-secondary">Job Title You Are Applying For</label>
+                            <input type="text" name="job_title" class="form-control rounded-3" placeholder="Full Stack Python Developer" required oninput="updateLivePreview()">
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold text-primary mb-3">The Letter Body</h5>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label small fw-bold text-secondary mb-0">Message Content</label>
+                        <button type="button" class="btn btn-sm btn-dark rounded-pill px-3 fw-bold" onclick="enhanceContentWithAI()" id="ai-btn">
+                            ✨ Improve with AI
+                        </button>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <textarea name="letter_body" id="letter_body_id" class="form-control rounded-3" rows="12" placeholder="Dear Hiring Team,..." required oninput="updateLivePreview()"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label small fw-bold text-secondary mb-0">Draw Your Signature</label>
+                            <button type="button" class="btn btn-sm btn-link text-danger p-0 text-decoration-none fw-bold" id="clear-sig">❌ Clear</button>
+                        </div>
+                        <div class="border rounded-3 bg-white shadow-sm overflow-hidden" style="height: 130px;">
+                            <canvas id="signature-pad" style="width: 100%; height: 100%; cursor: crosshair; display: block;"></canvas>
+                        </div>
+                        <input type="hidden" name="signature_data" id="signature-data-input">
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill fw-bold shadow-sm py-3">
+                        ✨ Save & Proceed to Export
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="preview-container studio-panel shadow-sm">
+                <iframe src="{% url 'cl_preview_blank' template.id %}" id="live-preview-frame" class="live-frame"></iframe>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Safe single-pass transmission mirroring function 
+    function updateLivePreview() {
+        const frame = document.getElementById('live-preview-frame');
+        const frameDoc = frame.contentDocument || frame.contentWindow.document;
+        const form = document.getElementById('cl-form');
+        const formData = new FormData(form);
+
+        for (let [key, value] of formData.entries()) {
+            const previewTarget = frameDoc.getElementById('view-' + key);
+            if (previewTarget) {
+                if (key === 'letter_body') {
+                    previewTarget.innerHTML = value.replace(/\n/g, '<br>');
+                } else {
+                    previewTarget.innerText = value || '';
+                }
+            }
+        }
+
+        // Direct fallback assignments keep fields matching without duplication triggers
+        const senderName = formData.get('sender_name') || 'Your Name';
+        const recipientName = formData.get('recipient_name') || 'Hiring Team';
+        
+        const fallbackTarget = frameDoc.getElementById('view-sender_name_fallback');
+        const salutationTarget = frameDoc.getElementById('view-salutation_name');
+        
+        if (fallbackTarget) fallbackTarget.innerText = senderName;
+        if (salutationTarget) salutationTarget.innerText = recipientName;
+    }
+
+    // Interactive Drawing Pad Canvas Logic
+    document.addEventListener("DOMContentLoaded", function() {
+        const canvas = document.getElementById("signature-pad");
+        const ctx = canvas.getContext("2d");
+        const clearBtn = document.getElementById("clear-sig");
+        const sigInput = document.getElementById("signature-data-input");
+        const frame = document.getElementById('live-preview-frame');
+
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            ctx.scale(ratio, ratio);
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = "#111111";
+        }
+        
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        let drawing = false;
+
+        function startDrawing(e) { drawing = true; draw(e); }
+
+        function stopDrawing() {
+            if (!drawing) return;
+            drawing = false;
+            ctx.beginPath();
+            
+            const base64Img = canvas.toDataURL("image/png");
+            sigInput.value = base64Img;
+            
+            const frameDoc = frame.contentDocument || frame.contentWindow.document;
+            const iframeSigImg = frameDoc.getElementById("view-signature_image");
+            if(iframeSigImg) {
+                iframeSigImg.src = base64Img;
+                iframeSigImg.style.display = "block";
+            }
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        canvas.addEventListener("mousedown", startDrawing);
+        canvas.addEventListener("mouseup", stopDrawing);
+        canvas.addEventListener("mouseleave", stopDrawing);
+        canvas.addEventListener("mousemove", draw);
+
+        canvas.addEventListener("touchstart", (e) => { e.preventDefault(); startDrawing(e); });
+        canvas.addEventListener("touchend", (e) => { e.preventDefault(); stopDrawing(); });
+        canvas.addEventListener("touchmove", (e) => { e.preventDefault(); draw(e); });
+
+        clearBtn.addEventListener("click", () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            sigInput.value = "";
+            const frameDoc = frame.contentDocument || frame.contentWindow.document;
+            const iframeSigImg = frameDoc.getElementById("view-signature_image");
+            if(iframeSigImg) iframeSigImg.style.display = "none";
+        });
+
+        frame.onload = function() { updateLivePreview(); };
+    });
+
+    // Asynchronous AI text rewriter engine
+    async function enhanceContentWithAI() {
+        const textInput = document.getElementById("letter_body_id");
+        const aiBtn = document.getElementById("ai-btn");
+        const currentText = textInput.value;
+
+        if (!currentText.trim()) {
+            alert("Type a quick base text first!");
+            return;
+        }
+
+        aiBtn.innerHTML = "⏳ Rewriting...";
+        aiBtn.disabled = true;
+
+        try {
+            const response = await fetch("{% url 'ai_enhance_text' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ text: currentText })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                textInput.value = data.enhanced_text;
+                updateLivePreview(); 
+            } else {
+                alert("AI framework parsing dropped.");
+            }
+        } catch (error) {
+            alert("Network connection timeout.");
+        } finally {
+            aiBtn.innerHTML = "✨ Improve with AI";
+            aiBtn.disabled = false;
+        }
+    }
+</script>
+{% endblock %}

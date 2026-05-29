@@ -1,0 +1,223 @@
+{% extends 'nav.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background-image: url("{% static 'dark.jpg' %}");
+        background-size: cover; background-position: center; background-attachment: fixed;
+    }
+    .glass-panel {
+        background-color: rgba(255, 255, 255, 0.40);
+        backdrop-filter: blur(10px); border: none;
+    }
+    
+    /* --- Live Preview & Scroll Adjustments --- */
+    .editor-container {
+        height: 85vh; overflow-y: auto;
+        -ms-overflow-style: none; scrollbar-width: none; 
+    }
+    .editor-container::-webkit-scrollbar { display: none; }
+    
+    .preview-container {
+        height: 85vh; overflow-y: auto;
+        background-color: #525659; display: flex; justify-content: center;
+        padding: 25px; border-radius: 10px; overflow: hidden;
+    }
+</style>
+
+<div class="container-fluid py-4 px-4">
+
+    <div class="row mb-3 justify-content-center">
+        <div class="col-12 text-center text-white">
+            <h2 class="fw-bold">Step 3: Education</h2>
+            <p>Tell us about your academic background. Watch it build live on the right!</p>
+        </div>
+    </div> 
+
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between position-relative text-white font-monospace small">
+                <div class="text-center text-success"><div class="bg-success text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">✓</div><br>Personal</div>
+                <div class="text-center text-success"><div class="bg-success text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">✓</div><br>Experience</div>
+                <div class="text-center fw-bold text-primary"><div class="bg-primary text-light rounded-circle d-inline-block text-center mb-1 fw-bold" style="width:24px; height:24px; line-height:24px;">3</div><br>Education</div>
+                <div class="text-center text-warning"><div class="bg-warning text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">4</div><br>Skills</div>
+                <div class="text-center text-warning"><div class="bg-warning text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">5</div><br>Extra Details</div>
+                
+                <div class="progress position-absolute top-25 start-0 translate-middle-y w-100" style="height: 2px; z-index: -1; margin-top: 12px;">
+                    <div class="progress-bar bg-info" style="width: 50%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-5 editor-container p-4 rounded-4 shadow-lg glass-panel mb-4 mb-lg-0">
+            
+            <form method="post" class="mb-5 border-bottom border-secondary pb-4">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger rounded-4 shadow-sm">
+                        <p class="fw-bold mb-1">⚠️ Hold on! We found an issue:</p>
+                        {{ form.errors }}
+                    </div>
+                {% endif %}
+                <h4 class="fw-bold mb-3 text-dark">Add a New Degree / School</h4>
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label fw-bold text-dark">Degree / Course</label>
+                        {{ form.degree }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label fw-bold text-dark">University / School</label>
+                        {{ form.school }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold text-dark">Passing Year</label>
+                        {{ form.passing_year }}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-outline-dark rounded-pill px-4 fw-bold shadow">✚ Save Education</button>
+            </form>
+
+            <h4 class="fw-bold mb-3 text-dark">Saved Education</h4>
+            
+            {% if education_list %}
+                <div class="d-flex flex-column gap-3 mb-4">
+                    {% for edu in education_list %}                        
+                        <div class="bg-white p-3 rounded-4 shadow-sm border border-secondary position-relative">                            
+                            <a href="{% url 'delete_education' template.id edu.id %}" 
+                               class="btn btn-sm btn-light position-absolute top-0 end-0 mt-3 me-3 rounded-pill shadow-sm" 
+                               title="Delete this education"
+                               onclick="return confirm('Are you sure you want to delete this degree?');">
+                                ❌
+                            </a>
+                            <h5 class="fw-bold text-primary mb-0 pe-5">{{ edu.degree }}</h5>
+                            <p class="text-muted small mb-0">@ {{ edu.school }} | Graduated: {{ edu.passing_year }}</p>                
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-dark fst-italic">No education added yet.</p>
+            {% endif %} 
+            
+            <div class="d-flex justify-content-between gap-3 mt-4">
+                <a href="{% url 'add_experience' template.id %}" class="btn btn-dark rounded-pill px-5 fw-bold shadow me-auto">« Previous Page</a>
+                <a href="{% url 'add_skill' template.id %}" class="btn btn-primary rounded-pill px-4 px-md-5 py-2 fw-bold shadow text-center">Continue to Skills »</a>
+            </div>
+        </div> 
+
+        <div class="col-lg-7 preview-container shadow-lg">
+            
+            <div style="width: 100%; height: 100%; overflow-y: auto; display: flex; justify-content: center; align-items: start; scrollbar-width: none;">
+                
+                <style>
+                    /* 🎨 LAYOUT RENDERING SCALE ENGINE */
+                    .live-resume-document-frame {
+                        width: 820px; /* Pads standard 794px template rules perfectly */
+                        height: 1150px;
+                        border: none;
+                        border-radius: 6px;
+                        box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+                        transform: scale(0.72);
+                        transform-origin: top center;
+                        background-color: white;
+                    }
+                </style>
+
+                <iframe src="{% url 'resume_preview' template.id %}" class="live-resume-document-frame" id="live-preview-viewport"></iframe>
+
+            </div>
+        </div>
+
+    </div> 
+</div>
+
+<script>
+    // --- UTILITY: TITLE CASE CONVERTER ---
+    function toTitleCase(text) {
+        return text.toLowerCase().replace(/\b\w/g, function(char) {
+            return char.toUpperCase();
+        });
+    }
+
+    // --- 👻 THE IFRAME GHOST INJECTOR ---
+    // This function reaches inside the iframe window to paint the live typing block
+    function updateLiveGhost(field, value, fallback) {
+        const iframe = document.getElementById('live-preview-viewport');
+        if (!iframe) return;
+        
+        // Safely access the document inside the iframe 
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        
+        // Look for our ghost block. If it doesn't exist yet, create it!
+        let ghostBlock = doc.getElementById('live-typing-ghost');
+        if (!ghostBlock) {
+            ghostBlock = doc.createElement('div');
+            ghostBlock.id = 'live-typing-ghost';
+            // Style it universally so it looks beautiful on all 6 templates
+            ghostBlock.style.cssText = "margin-top: 25px; border-left: 4px solid #0d6efd; padding-left: 15px; opacity: 0.6; font-family: Arial, sans-serif; transition: all 0.2s ease;";
+            ghostBlock.innerHTML = `
+                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.1rem; color: #111; margin-bottom: 3px;">
+                    <span id="ghost-degree">Degree / Course Major</span>
+                    <span id="ghost-year" style="color: #666; font-size: 0.95rem;">Year</span>
+                </div>
+                <div id="ghost-school" style="color: #555; font-style: italic; font-size: 1rem;">Typing Institute Name...</div>
+            `;
+            
+            // Attach it to the bottom of the A4 paper inside the iframe
+            const paper = doc.querySelector('.a4-paper') || doc.body;
+            paper.appendChild(ghostBlock);
+        }
+
+        // Update the specific text node inside the ghost block as the user types
+        const targetElement = doc.getElementById(`ghost-${field}`);
+        if (targetElement) {
+            targetElement.innerHTML = value.trim() === '' ? fallback : value;
+        }
+    }
+
+    // --- BULLETPROOF FIELD BINDERS ---
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        const previewIframe = document.getElementById('live-preview-viewport');
+        if (previewIframe) {
+            previewIframe.contentWindow.location.reload();
+        }
+
+        // 1. Degree Listener
+        const degreeField = document.querySelector('[name="degree"]');
+        if (degreeField) {
+            degreeField.addEventListener('input', function(event) {
+                let text = toTitleCase(event.target.value);
+                event.target.value = text;
+                updateLiveGhost('degree', text, 'Degree / Course Major');
+            });
+        }
+
+        // 2. School Listener
+        const schoolField = document.querySelector('[name="school"]');
+        if (schoolField) {
+            schoolField.addEventListener('input', function(event) {
+                let text = toTitleCase(event.target.value);
+                event.target.value = text;
+                updateLiveGhost('school', text, 'Typing Institute Name...');
+            });
+        }
+
+        // 3. Passing Year Listener
+        const yearField = document.querySelector('[name="passing_year"]');
+        if (yearField) {
+            yearField.addEventListener('input', function(event) {
+                updateLiveGhost('year', event.target.value, 'Year');
+            });
+        }
+    });
+</script>
+{% endblock %}

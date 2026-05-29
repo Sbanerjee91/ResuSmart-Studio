@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Executive Border Presentation Canvas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #fafafa; /* Subtle clean gray backdrop profile */
+            font-family: 'Inter', sans-serif;
+            color: #111111;
+            line-height: 1.65;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .a4-paper {
+            width: 100%;
+            max-width: 740px;
+            background: #ffffff;
+            position: relative;
+            min-height: 1040px;
+            padding: 40px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* 📏 Top Accent Dividing Rule line matching forth.jpg */
+        .top-edge-line {
+            border-top: 1px solid #111111;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        /* 📋 Header Information Grid Frame */
+        .header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .header-left {
+            max-width: 60%;
+        }
+        .header-left h1 {
+            font-size: 2.5rem;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+            color: #000000;
+            line-height: 1.1;
+            margin-bottom: 6px;
+        }
+        .job-title-tag {
+            font-size: 1.25rem;
+            color: #444444;
+            font-weight: 300;
+        }
+        
+        .header-right {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #222222;
+            max-width: 40%;
+        }
+        .contact-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+        }
+        .contact-row:last-child {
+            margin-bottom: 0;
+        }
+        .icon-label {
+            margin-left: 10px;
+            font-size: 0.95rem;
+            display: inline-block;
+        }
+
+        /* 📏 Bold Structural Separator Bar Element */
+        .bold-divider-bar {
+            border-top: 3.5px solid #111111;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        /* 📄 Content Area Styling Profile */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .date-container {
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            color: #333333;
+        }
+        .recipient-block {
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .salutation {
+            font-size: 1rem;
+            margin-bottom: 25px;
+        }
+        .letter-content {
+            font-size: 0.95rem;
+            color: #222222;
+            text-align: justify;
+            margin-bottom: 40px;
+        }
+        .letter-content br {
+            content: "";
+            margin: 12px 0;
+            display: block;
+        }
+        
+        /* ✍️ Live Interactive Signature Component Placement */
+        .closing-section {
+            margin-top: auto;
+            margin-bottom: 25px;
+        }
+        .signature-img {
+            max-height: 55px;
+            max-width: 200px;
+            margin: 8px 0;
+            display: block;
+        }
+        .sender-name-bottom {
+            font-weight: 700;
+            color: #000000;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        /* 📏 Bottom Accent Finishing Rule Line Container */
+        .bottom-edge-line {
+            border-top: 1px solid #111111;
+            width: 100%;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="a4-paper">
+        <div>
+            <div class="top-edge-line"></div>
+
+            <div class="header-wrapper">
+                <div class="header-left">
+                    <h1 id="view-sender_name">Your Name</h1>
+                    <div class="job-title-tag" id="view-job_title">Target Designation</div>
+                </div>
+                <div class="header-right">
+                    <div class="contact-row">
+                        <span id="view-sender_email">yourname@example.com</span>
+                        <span class="icon-label">✉️</span>
+                    </div>
+                    <div class="contact-row">
+                        <span id="view-sender_phone">+91 0000000000</span>
+                        <span class="icon-label">📞</span>
+                    </div>
+                    <div class="contact-row">
+                        <span id="view-sender_location">Your City, India</span>
+                        <span class="icon-label">📍</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bold-divider-bar"></div>
+
+            <div class="main-content">
+                <div class="date-container" id="view-current_date">May 29, 2026</div>
+                
+                <div class="recipient-block">
+                    <div style="font-weight: 700;" id="view-recipient_name">Hiring Manager Name</div>
+                    <div id="view-company_name">Company Name Inc.</div>
+                </div>
+
+                <div class="salutation">
+                    Dear <span id="view-salutation_name">Hiring Team</span>,
+                </div>
+                
+                <div class="letter-content" id="view-letter_body">
+                    Your text content will sync here live...
+                </div>
+                
+                <div class="closing-section">
+                    <p>Yours sincerely,</p>
+                    
+                    <img id="view-signature_image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Signature" class="signature-img" style="display: none;">
+                    
+                    <div class="sender-name-bottom" id="view-sender_name_fallback">Your Name</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-edge-line"></div>
+    </div>
+
+    <script>
+        // Automatic setup for current date string initialization formatting metrics
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('view-current_date').innerText = new Date().toLocaleDateString('en-US', options);
+
+        // Single pass mutations sync engine handles fallbacks across nodes cleanly
+        const observer = new MutationObserver(() => {
+            const freshName = document.getElementById('view-sender_name').innerText;
+            const freshRecipient = document.getElementById('view-recipient_name').innerText;
+            
+            document.getElementById('view-sender_name_fallback').innerText = freshName || "Your Name";
+            document.getElementById('view-salutation_name').innerText = freshRecipient || "Hiring Team";
+        });
+        observer.observe(document.getElementById('view-sender_name'), { childList: true, characterData: true, subtree: true });
+        observer.observe(document.getElementById('view-recipient_name'), { childList: true, characterData: true, subtree: true });
+    </script>
+</body>
+</html>

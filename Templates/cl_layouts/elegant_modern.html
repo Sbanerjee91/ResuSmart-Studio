@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Modern Cover Letter Sheet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            color: #111111;
+            line-height: 1.65;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .a4-paper {
+            width: 100%;
+            max-width: 740px;
+            background: #ffffff;
+            position: relative;
+            min-height: 1040px;
+            padding: 60px 55px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 📋 Header Information Section */
+        .header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 15px;
+        }
+        .header-left {
+            max-width: 60%;
+        }
+        .header-left h1 {
+            font-size: 2.6rem;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+            color: #000000;
+            line-height: 1.1;
+            margin-bottom: 5px;
+        }
+        .job-title-tag {
+            font-size: 1.35rem;
+            color: #333333;
+            font-weight: 300;
+        }
+        
+        .header-right {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #333333;
+            line-height: 1.5;
+            max-width: 40%;
+        }
+
+        /* 📏 Thin Divider Line matching fifth_3.jpg */
+        .thin-divider-line {
+            border-top: 1px solid #111111;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        /* 📄 Content Area Layout */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 🎯 Right-aligned Date Container */
+        .date-container {
+            text-align: right;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            color: #000000;
+        }
+        
+        /* Recipient Block on the Left */
+        .recipient-block {
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #111111;
+        }
+        
+        /* Capitalized Job Reference Line */
+        .reference-line {
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 30px;
+            color: #000000;
+        }
+        
+        .salutation {
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+        
+        .letter-content {
+            font-size: 0.95rem;
+            color: #222222;
+            text-align: justify;
+            margin-bottom: 40px;
+        }
+        .letter-content br {
+            content: "";
+            margin: 12px 0;
+            display: block;
+        }
+        
+        /* ✍️ Signature Presentation Components */
+        .closing-section {
+            margin-top: auto;
+            margin-bottom: 10px;
+        }
+        .closing-section p {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+        .signature-img {
+            max-height: 55px;
+            max-width: 200px;
+            margin: 5px 0;
+            display: block;
+        }
+        .sender-name-bottom {
+            color: #000000;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="a4-paper">
+        <!-- Top Info Header Profile -->
+        <div class="header-wrapper">
+            <div class="header-left">
+                <h1 id="view-sender_name">Your Name</h1>
+                <div class="job-title-tag" id="view-job_title">Target Designation</div>
+            </div>
+            <div class="header-right">
+                <div id="view-sender_phone">+91 0000000000</div>
+                <div id="view-sender_email">yourname@example.com</div>
+                <div id="view-sender_location">Your City, India</div>
+            </div>
+        </div>
+
+        <!-- Structural Divider -->
+        <div class="thin-divider-line"></div>
+
+        <!-- Document Body Panel Workspace -->
+        <div class="main-content">
+            <!-- 🎯 Placed on the right side matching reference image -->
+            <div class="date-container" id="view-current_date">29th May 2026</div>
+            
+            <!-- Recipient Information Block -->
+            <div class="recipient-block">
+                <div style="font-weight: 500;" id="view-recipient_name">Hiring Manager Name</div>
+                <div id="view-company_name">Company Name Inc.</div>
+            </div>
+
+            <!-- Capitalized Job Reference Context Line -->
+            <div class="reference-line">
+                JOB REFERENCE: <span id="view-reference_job_title">TARGET DESIGNATION</span>
+            </div>
+
+            <div class="salutation">
+                Dear <span id="view-salutation_name">Hiring Team</span>,
+            </div>
+            
+            <div class="letter-content" id="view-letter_body">
+                Your text content will sync here live...
+            </div>
+            
+            <div class="closing-section">
+                <p>Sincerely,</p>
+                <div class="sender-name-bottom" id="view-sender_name_fallback">Your Name</div>
+                
+                <!-- Dynamic Hand-drawn Vector Canvas Hook Node -->
+                <img id="view-signature_image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Signature" class="signature-img" style="display: none;">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Automatic setup for custom date formatting metrics matching the template style
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        document.getElementById('view-current_date').innerText = new Date().toLocaleDateString('en-GB', options);
+
+        // Active layout observer mutation engine to update fallback blocks smoothly
+        const observer = new MutationObserver(() => {
+            const currentName = document.getElementById('view-sender_name').innerText;
+            const currentJob = document.getElementById('view-job_title').innerText;
+            const currentRecipient = document.getElementById('view-recipient_name').innerText;
+            
+            document.getElementById('view-sender_name_fallback').innerText = currentName || "Your Name";
+            document.getElementById('view-reference_job_title').innerText = currentJob || "TARGET DESIGNATION";
+            document.getElementById('view-salutation_name').innerText = currentRecipient || "Hiring Team";
+        });
+        observer.observe(document.getElementById('view-sender_name'), { childList: true, characterData: true, subtree: true });
+        observer.observe(document.getElementById('view-job_title'), { childList: true, characterData: true, subtree: true });
+        observer.observe(document.getElementById('view-recipient_name'), { childList: true, characterData: true, subtree: true });
+    </script>
+</body>
+</html>

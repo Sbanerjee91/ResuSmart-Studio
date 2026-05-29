@@ -1,0 +1,92 @@
+{% extends 'nav.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f4f6f9;
+    }
+    .export-container {
+        max-width: 900px;
+        margin: 40px auto;
+    }
+    .action-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        padding: 24px;
+        margin-bottom: 30px;
+    }
+    .paper-frame-container {
+        background: #525659;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: inset 0 4px 10px rgba(0,0,0,0.15);
+        display: flex;
+        justify-content: center;
+    }
+    .export-frame {
+        width: 100%;
+        height: 1060px;
+        max-width: 740px;
+        border: none;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+</style>
+
+<div class="container export-container">
+    <div class="action-card d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="fw-bold text-dark mb-1">Your Cover Letter is Ready!</h4>
+            <p class="text-muted small mb-0">Review your formatting layout profile before final export generation.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'cover_letter_builder' template.id %}" class="btn btn-outline-secondary rounded px-4 fw-bold">
+                ✏️ Edit Content
+            </a>
+            <button onclick="downloadAsPDF()" class="btn btn-success rounded px-4 fw-bold shadow-sm">
+                📥 Download Professional PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="paper-frame-container">
+        <iframe src="{% url 'cl_preview_blank' template.id %}?letter_id={{ letter.id }}" id="export-document-frame" class="export-frame"></iframe>
+    </div>
+</div>
+<script>
+
+    function downloadAsPDF() {
+        const myFrame = document.getElementById('export-document-frame');
+        myFrame.contentWindow.focus();
+        myFrame.contentWindow.print();
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const myFrame = document.getElementById('export-document-frame');
+
+        myFrame.onload = function() {
+            const frameDoc = myFrame.contentDocument || myFrame.contentWindow.document;
+            
+            frameDoc.getElementById('view-sender_name').innerText = "{{ letter.sender_name|escapejs }}";
+            frameDoc.getElementById('view-job_title').innerText = "{{ letter.job_title|escapejs }}";
+            frameDoc.getElementById('view-sender_phone').innerText = "{{ letter.sender_phone|escapejs }}";
+            frameDoc.getElementById('view-sender_email').innerText = "{{ letter.sender_email|escapejs }}";
+            frameDoc.getElementById('view-sender_location').innerText = "{{ letter.sender_location|escapejs }}";
+            frameDoc.getElementById('view-recipient_name').innerText = "{{ letter.recipient_name|escapejs }}";
+            frameDoc.getElementById('view-company_name').innerText = "{{ letter.company_name|escapejs }}";
+            
+            frameDoc.getElementById('view-letter_body').innerHTML = "{{ letter.letter_body|linebreaksbr|escapejs }}";
+            
+            const signatureData = "{{ letter.signature_data|escapejs }}";
+            const sigImg = frameDoc.getElementById('view-signature_image');
+            
+            if (signatureData && sigImg) {
+                sigImg.src = signatureData;
+                sigImg.style.display = "block";
+            }
+        };
+    });
+</script>
+{% endblock %}

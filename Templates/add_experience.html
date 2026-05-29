@@ -1,0 +1,287 @@
+{% extends 'nav.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    body {
+        background-image: url("{% static 'dark.jpg' %}");
+        background-size: cover; background-position: center; background-attachment: fixed;
+    }
+    .glass-panel {
+        background-color: rgba(255, 255, 255, 0.40);
+        backdrop-filter: blur(10px); border: none;
+    }
+    @keyframes pulse-glow {
+        0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(13, 110, 253, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+    }
+    .ai-thinking {
+        animation: pulse-glow 1.5s infinite;
+    }
+    
+    /* --- Live Preview & Scroll Adjustments --- */
+    .editor-container {
+        height: 85vh; overflow-y: auto;
+        -ms-overflow-style: none; scrollbar-width: none; 
+    }
+    .editor-container::-webkit-scrollbar { display: none; }
+    
+    .preview-container {
+        height: 85vh; overflow-y: auto;
+        background-color: #525659; display: flex; justify-content: center;
+        padding: 25px; border-radius: 10px; overflow: hidden;
+    }
+</style>
+
+<div class="container-fluid py-4 px-4">
+    
+    <div class="row mb-3 justify-content-center">
+        <div class="col-12 text-center text-white">
+            <h2 class="fw-bold">Step 2: Work Experience</h2>
+            <p>Add your past jobs. Watch them build on the right!</p>
+        </div>
+    </div>
+
+<div class="row justify-content-center mb-4">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between position-relative text-white font-monospace small">
+            <div class="text-center text-success"><div class="bg-success text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">✓</div><br>Personal</div>
+            <div class="text-center fw-bold text-primary"><div class="bg-primary text-light rounded-circle d-inline-block text-center mb-1 fw-bold" style="width:24px; height:24px; line-height:24px;">2</div><br>Experience</div>
+            <div class="text-center text-warning"><div class="bg-warning text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">3</div><br>Education</div>
+            <div class="text-center text-warning"><div class="bg-warning text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">4</div><br>Skills</div>
+            <div class="text-center text-warning"><div class="bg-warning text-white rounded-circle d-inline-block text-center mb-1" style="width:24px; height:24px; line-height:24px;">5</div><br>Extra Details</div>
+            
+            <div class="progress position-absolute top-25 start-0 translate-middle-y w-100" style="height: 2px; z-index: -1; margin-top: 12px;">
+                <div class="progress-bar bg-info" style="width: 25%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="row">
+        <div class="col-lg-5 editor-container p-4 rounded-4 shadow-lg glass-panel mb-4 mb-lg-0">
+            
+            <form method="post" class="mb-5 border-bottom border-secondary pb-4" id="experience-form">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                    <div class="alert alert-danger rounded-4 shadow-sm">
+                        <p class="fw-bold mb-1">⚠️ Hold on! We found an issue:</p>
+                        {{ form.errors }}
+                    </div>
+                {% endif %}
+                <h4 class="fw-bold mb-3 text-dark">Add a New Position</h4>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Job Title</label>
+                        {{ form.job_title }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Company</label>
+                        {{ form.company }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">Start Date</label>
+                        {{ form.start_date }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold text-dark">End Date (Blank : Present)</label>
+                        {{ form.end_date }}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-dark">Job Description</label>
+                    <div class="position-relative">
+                        {{ form.description }}
+                        <button type="button" id="ai-enhance-btn" onclick="callAIEnhancer()" class="btn btn-dark btn-sm position-absolute bottom-0 end-0 m-2 rounded-pill shadow-sm fw-bold px-3 py-1">
+                            ✨ AI Enhance
+                        </button>
+                    </div>
+                    <small class="text-primary fw-bold mt-2 d-block">Type a basic sentence like "I fixed code" and click AI Enhance!</small>
+                </div>
+
+                <button type="submit" class="btn btn-outline-dark rounded-pill px-4 fw-bold shadow">✚ Save Experience</button>
+            </form>
+
+            <h4 class="fw-bold mb-3 text-dark">Saved Experience</h4>
+            
+            {% if jobs %}
+                <div class="d-flex flex-column gap-3 mb-4">
+                    {% for job in jobs %}                        
+                        <div class="bg-white p-3 rounded-4 shadow-sm border border-secondary position-relative">                            
+                            <a href="{% url 'delete_experience' template.id job.id %}" 
+                               class="btn btn-sm btn-light position-absolute top-0 end-0 mt-3 me-3 rounded-pill shadow-sm" 
+                               title="Delete this job"
+                               onclick="return confirm('Are you sure you want to delete this job?');">
+                                ❌
+                            </a>
+                            <h5 class="fw-bold text-primary mb-0 pe-5">{{ job.job_title }}</h5>
+                            <p class="text-muted small mb-2">@ {{ job.company }} | {{ job.start_date }} - {% if job.end_date %}{{ job.end_date }}{% else %}Present{% endif %}</p>
+                            <p class="mb-0 small text-dark">{{ job.description }}</p>                
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-dark fst-italic">No work experience added yet.</p>
+            {% endif %} 
+
+            <div class="d-flex flex-column-reverse flex-md-row justify-content-between gap-3 mt-4">
+                {% if jobs %}
+                    <a href="{% url 'resume_builder' template.id %}" class="btn btn-dark rounded-pill px-5 fw-bold shadow me-auto">« Previous</a>
+                    <a href="{% url 'add_education' template.id %}" class="btn btn-primary rounded-pill px-4 px-md-5 py-2 fw-bold shadow text-center">Continue to Education »</a>
+                {% else %}
+                    <a href="{% url 'resume_builder' template.id %}" class="btn btn-dark rounded-pill px-5 fw-bold shadow me-auto">« Previous</a>
+                    <a href="{% url 'add_education' template.id %}" class="btn btn-outline-info rounded-pill px-5 fw-bold shadow bg-white">Skip Experience »</a>
+                {% endif %}
+            </div>
+        </div> 
+
+        <div class="col-lg-7 preview-container shadow-lg">
+            
+            <div style="width: 100%; height: 100%; overflow-y: auto; display: flex; justify-content: center; align-items: start; scrollbar-width: none;">
+                
+                <style>
+                    .live-resume-document-frame {
+                        width: 820px;
+                        height: 1150px;
+                        border: none;
+                        border-radius: 6px;
+                        box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+                        transform: scale(0.72);
+                        transform-origin: top center;
+                        background-color: white;
+                    }
+                </style>
+
+                <iframe src="{% url 'resume_preview' template.id %}" class="live-resume-document-frame" id="live-preview-viewport"></iframe>
+
+            </div>
+        </div>
+
+    </div> 
+</div>
+
+<script>
+    // --- UTILITY FUNCTIONS ---
+    function toTitleCase(text) {
+        return text.toLowerCase().replace(/\b\w/g, function(char) {
+            return char.toUpperCase();
+        });
+    }
+
+    // --- 📡 THE POSTMESSAGE BROADCASTER ---
+    function broadcastGhostBlock(field, value, fallback) {
+        const iframe = document.getElementById('live-preview-viewport');
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({
+                type: 'INJECT_GHOST_BLOCK',
+                section: 'EXPERIENCE', // Tell the template which block to draw!
+                field: field,
+                value: value,
+                fallback: fallback
+            }, '*');
+        }
+    }
+
+    // --- FORM FIELD LISTENERS ---
+    const inputs = [
+        { name: 'job_title', fieldName: 'job_title', fallback: 'Typing New Job Title...', titleCase: true },
+        { name: 'company', fieldName: 'company', fallback: 'Company Name', titleCase: true },
+        { name: 'start_date', fieldName: 'start_date', fallback: 'Start Date', titleCase: false },
+        { name: 'end_date', fieldName: 'end_date', fallback: 'End Date', titleCase: false },
+        { name: 'description', fieldName: 'description', fallback: 'Your polished duties will stream here...', titleCase: false }
+    ];
+
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // Auto-refresh the frame to pull latest saved DB state
+        const previewIframe = document.getElementById('live-preview-viewport');
+        if (previewIframe) {
+            previewIframe.contentWindow.location.reload();
+        }
+
+        inputs.forEach(field => {
+            const inputElement = document.querySelector(`[name="${field.name}"]`);
+            if (inputElement) {
+                inputElement.addEventListener('input', function(event) {
+                    let text = event.target.value;
+                    if (field.titleCase) {
+                        text = toTitleCase(text);
+                        event.target.value = text;
+                    }
+                    broadcastGhostBlock(field.fieldName, text, field.fallback);
+                });
+            }
+        });
+    });
+
+    // --- REAL AI LOGIC WITH TYPEWRITER EFFECT ---
+    let typingTimer;
+
+    function callAIEnhancer() {
+        const inputField = document.querySelector('textarea[name="description"]');
+        const btn = document.getElementById('ai-enhance-btn');
+        const rawText = inputField.value;
+
+        if (rawText.trim() === '') {
+            alert("Please type a basic description first! (e.g., 'I managed social media accounts')");
+            return;
+        }
+
+        const originalBtnText = btn.innerHTML;
+        btn.innerHTML = '⏳ Thinking...';
+        btn.classList.add('ai-thinking');
+        btn.disabled = true;
+
+        fetch("{% url 'enhance_bullet' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}' 
+            },
+            body: JSON.stringify({ text: rawText })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                
+                clearInterval(typingTimer);
+                inputField.value = "";
+                inputField.focus();
+
+                let fullText = data.enhanced_text;
+                let letterIndex = 0;
+
+                // 🚀 TYPEWRITER EFFECT: Blast it to both local input and iframe ghost block!
+                typingTimer = setInterval(() => {
+                    if (letterIndex < fullText.length) {
+                        inputField.value += fullText.charAt(letterIndex);
+                        broadcastGhostBlock('description', inputField.value, '...');
+                        letterIndex++;
+                    } else {
+                        clearInterval(typingTimer);
+                    }
+                }, 15); 
+
+            } else {
+                alert('Oops! AI enhancement failed: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Something went wrong connecting to the AI.');
+        })
+        .finally(() => {
+            btn.innerHTML = originalBtnText;
+            btn.classList.remove('ai-thinking');
+            btn.disabled = false;
+        });
+    }
+</script>
+{% endblock %}
