@@ -16,11 +16,11 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.clickjacking import xframe_options_exempt
 from .models import CoverLetterTemplate, SavedCoverLetter
 from django.views.decorators.csrf import csrf_exempt
-import google.generativeai as genai  # ✅ Use ONE SDK only
+import google.generativeai as genai  # ✅ ONE SDK only
 import os
 
-# ✅ Configure once at module level using environment variable
-genai.configure(api_key=os.environ.get('GEMINI_API_KEY'))
+# ✅ Configure once using environment variable
+genai.configure(api_key=os.environ.get('GEMINI_API_KEY', ''))
 
 def home(request):
     return render(request, 'home.html')
