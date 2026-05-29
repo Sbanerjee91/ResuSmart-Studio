@@ -1,5 +1,6 @@
 django>=5.0
 google-genai
+google-generativeai
 python-dotenv
 Pillow
 PyPDF2
